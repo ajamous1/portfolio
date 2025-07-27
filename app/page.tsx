@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Image from 'next/image'
 import Dither from './components/Backgrounds/Dither/Dither'
 
 export default function Home() {
@@ -117,14 +118,14 @@ export default function Home() {
               As a Computer Engineering student at the University of Waterloo, and a Multimedia Designer for 4x NBA-All Star Karl-Anthony Towns, I combine strong analytical problem-solving with a passion for creating engaging visual experiences.
             </p>
             <p>
-              I'm extremely inspired by Leonardo da Vinci. His ability to excel in every field and change the world is the versatility that I strive for every day.
+              I&apos;m extremely inspired by Leonardo da Vinci. His ability to excel in every field and change the world is the versatility that I strive for every day.
             </p>
             <p>
               My work spans from developing AI-driven applications and embedded systems to designing professional-level multimedia content. With experience in both tech innovation and creative design, my goal is to continue to bridge the gap between engineering and visual design, providing solutions for complex problems.
             </p>
           </div>
           <div className="about-image">
-            <img src="/images/davinci.png" alt="Leonardo da Vinci" />
+            <Image src="/images/davinci.png" alt="Leonardo da Vinci" width={300} height={300} />
           </div>
         </div>
 
