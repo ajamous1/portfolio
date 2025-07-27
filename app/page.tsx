@@ -1,33 +1,27 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Dither from './components/Backgrounds/Dither/Dither'
 
 export default function Home() {
   const [isDeveloper, setIsDeveloper] = useState(true)
-  const [isDarkMode, setIsDarkMode] = useState(false)
+  const [isDarkMode, setIsDarkMode] = useState(true) // Default to dark mode
+  const [isDitherReady, setIsDitherReady] = useState(false)
 
   useEffect(() => {
-    // Check for saved theme preference or default to light mode
+    // Check for saved theme preference or default to dark mode
     const savedTheme = localStorage.getItem('theme')
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
     const html = document.documentElement
     
-    if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+    if (savedTheme === 'light') {
+      setIsDarkMode(false)
+      html.setAttribute('data-theme', 'light')
+    } else {
       setIsDarkMode(true)
       html.setAttribute('data-theme', 'dark')
-      html.style.setProperty('--bg-color', '#0d0d0d')
-      html.style.setProperty('--text-color', '#fafafa')
-      html.style.setProperty('--body-text-color', 'rgba(250, 250, 250, 0.8)')
-    } else {
-      html.style.setProperty('--bg-color', '#fafafa')
-      html.style.setProperty('--text-color', '#0d0d0d')
-      html.style.setProperty('--body-text-color', 'rgba(13, 13, 13, 0.8)')
     }
     
-  }, [])
-
-  useEffect(() => {
-    // Update mode for selection styling whenever isDeveloper changes
+    // Update mode for selection styling
     document.body.setAttribute('data-mode', isDeveloper ? 'developer' : 'designer')
   }, [isDeveloper])
 
@@ -50,15 +44,9 @@ export default function Home() {
     
     if (newTheme) {
       html.setAttribute('data-theme', 'dark')
-      html.style.setProperty('--bg-color', '#0d0d0d')
-      html.style.setProperty('--text-color', '#fafafa')
-      html.style.setProperty('--body-text-color', 'rgba(250, 250, 250, 0.8)')
       localStorage.setItem('theme', 'dark')
     } else {
-      html.removeAttribute('data-theme')
-      html.style.setProperty('--bg-color', '#fafafa')
-      html.style.setProperty('--text-color', '#0d0d0d')
-      html.style.setProperty('--body-text-color', 'rgba(13, 13, 13, 0.8)')
+      html.setAttribute('data-theme', 'light')
       localStorage.setItem('theme', 'light')
     }
   }
@@ -70,29 +58,57 @@ export default function Home() {
     }
   }
 
+  const handleDitherReady = () => {
+    setIsDitherReady(true)
+  }
+
   return (
-    <div className="container">
-      <div className="content-section">
-        <h1>Ahmad Jamous is a <br></br> {isDeveloper ? 'Developer' : 'Designer'} based in <br></br> Toronto, Canada</h1>
+    <>
+      <div className="hero-section" style={{ opacity: isDitherReady ? 1 : 0, transition: 'opacity 0.3s ease' }}>
+        <div className="dither-container-wrapper">
+          <Dither
+            waveColor={isDeveloper ? [0.23, 0.53, 1.0] : [1.0, 0.37, 0.34]}
+            disableAnimation={false}
+            enableMouseInteraction={true}
+            mouseRadius={1.3}
+            colorNum={4}
+            waveAmplitude={0.5}
+            waveFrequency={1.5}
+            waveSpeed={0.05}
+            onReady={handleDitherReady}
+          />
+        </div>
+        <div className="hero-content">
+          <h1>Ahmad Jamous is a <br></br> {isDeveloper ? 'Developer' : 'Designer'} based in <br></br> Toronto, Canada</h1>
         
-        <div className="toggle-container">
-          <div
-            className={`toggle-switch ${isDeveloper ? 'developer' : 'designer'}`}
-            onClick={toggleMode}
-            onKeyDown={handleKeyDown}
-            role="button"
-            tabIndex={0}
-            aria-label={`Switch to ${isDeveloper ? 'Designer' : 'Developer'} mode`}
-          >
-            <div className="toggle-slider"></div>
-          </div>
-          <div className="action-buttons">
-            {isDeveloper && (
-              <button className="action-btn resume-btn">Resume</button>
-            )}
-            <a href="mailto:ajamous@uwaterloo.ca" target="_blank" rel="noopener noreferrer" className="action-btn contact-btn">Contact</a>
+          <div className="controls-group">
+            <div className="toggle-anchor">
+              <div
+                className={`toggle-switch ${isDeveloper ? 'developer' : 'designer'}`}
+                onClick={toggleMode}
+                onKeyDown={handleKeyDown}
+                role="button"
+                tabIndex={0}
+                aria-label={`Switch to ${isDeveloper ? 'Designer' : 'Developer'} mode`}
+              >
+                <div className="toggle-slider"></div>
+              </div>
+            </div>
+            
+            <div className="action-buttons">
+              {isDeveloper ? (
+                <button className="action-btn resume-btn">Resume</button>
+              ) : (
+                <button className="action-btn work-btn">Work</button>
+              )}
+              <a href="mailto:ajamous@uwaterloo.ca" target="_blank" rel="noopener noreferrer" className="action-btn contact-btn">Contact</a>
+            </div>
           </div>
         </div>
+      </div>
+
+      <div className="container">
+        <div className="content-section">
         
         <h2>About</h2>
         <p>
@@ -143,6 +159,7 @@ export default function Home() {
           </button>
         </div>
       </footer>
-    </div>
+      </div>
+    </>
   )
 } 
