@@ -63,6 +63,26 @@ html[data-theme="dark"] .action-btn {
   color: #fafafa !important;
 }
 
+
+
+/* Completely hide grid in hero section */
+.hero-section {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-image: url('/images/cntower.png');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  z-index: 1;
+}
+
+
+
 p, li {
   color: var(--body-text-color);
 }
@@ -108,38 +128,6 @@ body[data-mode="designer"] ::-moz-selection {
 }
 
 /* Hero Section */
-.hero-section {
-  position: relative;
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  background-image: url('/images/cntower.png');
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
-}
-
-.hero-section::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.3);
-  z-index: 1;
-}
-
-html[data-theme="dark"] .hero-section::before {
-  background: rgba(0, 0, 0, 0.5);
-}
-
-html[data-theme="light"] .hero-section::before {
-  background: rgba(255, 255, 255, 0.1);
-}
 
 
 
@@ -365,6 +353,107 @@ html[data-theme="light"] .action-btn:hover {
   transition: opacity 0.3s ease;
 }
 
+/* Projects Section Styles */
+.projects-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-top: 2rem;
+  align-items: center;
+}
+
+.project-card {
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  width: 100%;
+  max-width: 1152px;
+}
+
+.project-card:hover {
+  box-shadow: 0 0 30px rgba(58, 134, 255, 0.4);
+}
+
+.project-thumbnail {
+  width: 100%;
+  height: 300px;
+  position: relative;
+  overflow: hidden;
+}
+
+.project-thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.project-card:hover .project-thumbnail img {
+  /* No hover effects - images stay completely static */
+}
+
+.project-content {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.project-content h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--text-color);
+}
+
+.project-content p {
+  font-size: 1rem;
+  color: var(--body-text-color);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Light mode project card styling */
+html[data-theme="light"] .project-card {
+  background: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+html[data-theme="light"] .project-card:hover {
+  box-shadow: 0 0 30px rgba(58, 134, 255, 0.4);
+}
+
+/* Mode-specific hover effects */
+body[data-mode="developer"] .project-card:hover {
+  box-shadow: 0 0 30px rgba(58, 134, 255, 0.4);
+}
+
+body[data-mode="designer"] .project-card:hover {
+  box-shadow: 0 0 30px rgba(255, 94, 87, 0.4);
+}
+
+/* View More Button Styles */
+.view-more-container {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.view-more-btn {
+  color: var(--text-color);
+  text-decoration: none;
+  font-size: 1rem;
+  transition: text-decoration 0.2s ease;
+}
+
+.view-more-btn:hover {
+  text-decoration: underline;
+}
+
 /* Footer styles */
 .footer {
   margin-top: 4rem;
@@ -451,6 +540,19 @@ html[data-theme="light"] .action-btn:hover {
     max-width: 250px;
   }
   
+  .project-card {
+    flex-direction: column;
+  }
+  
+  .project-thumbnail {
+    flex: none;
+    height: 200px;
+  }
+  
+  .project-content {
+    padding: 1rem;
+  }
+  
   .toggle-switch {
     width: 105px;
     height: 52px;
@@ -515,6 +617,14 @@ html[data-theme="light"] .action-btn:hover {
     max-width: 200px;
   }
   
+  .project-thumbnail {
+    height: 180px;
+  }
+  
+  .project-content h3 {
+    font-size: 1.25rem;
+  }
+  
   .controls-group {
     gap: 1.5rem;
     margin-top: 2rem;
@@ -576,6 +686,18 @@ html[data-theme="light"] .action-btn:hover {
   
   .about-image img {
     max-width: 150px;
+  }
+  
+  .project-thumbnail {
+    height: 150px;
+  }
+  
+  .project-content {
+    padding: 0.75rem;
+  }
+  
+  .project-content h3 {
+    font-size: 1.1rem;
   }
   
   .toggle-switch {

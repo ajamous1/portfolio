@@ -111,40 +111,88 @@ export default function Home() {
       <div className="container">
         <div className="content-section">
         
-        <div className="about-section">
-          <div className="about-content">
-            <h2>About</h2>
-            <p>
-              As a Computer Engineering student at the University of Waterloo, and a Multimedia Designer for 4x NBA-All Star Karl-Anthony Towns, I combine strong analytical problem-solving with a passion for creating engaging visual experiences.
-            </p>
-            <p>
-              I&apos;m extremely inspired by Leonardo da Vinci. His ability to excel in every field and change the world is the versatility that I strive for every day.
-            </p>
-            <p>
-              My work spans from developing AI-driven applications and embedded systems to designing professional-level multimedia content. With experience in both tech innovation and creative design, my goal is to continue to bridge the gap between engineering and visual design, providing solutions for complex problems.
-            </p>
-          </div>
-          <div className="about-image">
-            <Image src="/images/davinci.png" alt="Leonardo da Vinci" width={300} height={300} />
-          </div>
-        </div>
+       
 
         <h2>Projects</h2>
-        <ul>
+        <div className="projects-grid">
           {isDeveloper ? (
             <>
-              <li>MyType - Redefining the Creative Process through Typography</li>
-              <li>Flickr - AI-Powered Penalty Predictor</li>
-              <li>NBA Gameday Generator</li>
+              <div className="project-card">
+                <div className="project-thumbnail">
+                  <Image src="/images/projects/mytype-thumbnail.jpg" alt="MyType Project" width={400} height={250} />
+                </div>
+                <div className="project-content">
+                  <h3>MyType</h3>
+                  <p>Redefining the Creative Process through Typography</p>
+                </div>
+              </div>
+              
+              <div className="project-card">
+                <div className="project-thumbnail">
+                  <Image src="/images/projects/flickr-thumbnail.jpg" alt="Flickr Project" width={400} height={250} />
+                </div>
+                <div className="project-content">
+                  <h3>Flickr</h3>
+                  <p>AI-Powered Penalty Predictor</p>
+                </div>
+              </div>
+              
+              <div className="project-card">
+                <div className="project-thumbnail">
+                  <Image src="/images/projects/nba-thumbnail.jpg" alt="NBA Gameday Generator" width={400} height={250} />
+                </div>
+                <div className="project-content">
+                  <h3>NBA Gameday Generator</h3>
+                  <p>Automated game day content creation</p>
+                </div>
+              </div>
             </>
           ) : (
             <>
-              <li>Siemens RPO Rebrand</li>
-              <li>Minnesota Timberwolves Rebrand Concept</li>
-              <li>World Cup Design Concepts</li>
+              <div className="project-card">
+                <div className="project-thumbnail">
+                  <Image src="/images/projects/siemens-thumbnail.jpg" alt="Siemens RPO Rebrand" width={400} height={250} />
+                </div>
+                <div className="project-content">
+                  <h3>Siemens RPO Rebrand</h3>
+                  <p>Complete brand identity redesign</p>
+                </div>
+              </div>
+              
+              <div className="project-card">
+                <div className="project-thumbnail">
+                  <Image src="/images/projects/timberwolves-thumbnail.jpg" alt="Minnesota Timberwolves Rebrand" width={400} height={250} />
+                </div>
+                <div className="project-content">
+                  <h3>Minnesota Timberwolves Rebrand</h3>
+                  <p>Conceptual NBA team rebrand</p>
+                </div>
+              </div>
+              
+              <div className="project-card">
+                <div className="project-thumbnail">
+                  <Image src="/images/projects/worldcup-thumbnail.jpg" alt="World Cup Design Concepts" width={400} height={250} />
+                </div>
+                <div className="project-content">
+                  <h3>World Cup Design Concepts</h3>
+                  <p>International football tournament branding</p>
+                </div>
+              </div>
             </>
           )}
-        </ul>
+        </div>
+        
+        <div className="view-more-container">
+          {isDeveloper ? (
+            <a href="/projects" className="view-more-btn">
+              View more...
+            </a>
+          ) : (
+            <a href="/work" className="view-more-btn">
+              View more...
+            </a>
+          )}
+        </div>
       </div>
       
       <footer className="footer">
