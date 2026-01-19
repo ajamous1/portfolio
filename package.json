@@ -2,28 +2,29 @@
   "name": "portfolio",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
   },
   "dependencies": {
-    "@react-three/fiber": "^8.15.12",
-    "@react-three/postprocessing": "^2.15.11",
-    "next": "14.0.4",
-    "ogl": "^1.0.11",
-    "postprocessing": "^6.34.3",
     "react": "^18",
     "react-dom": "^18",
-    "three": "^0.158.0"
+    "react-router-dom": "^7.12.0"
   },
   "devDependencies": {
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "@vitejs/plugin-react": "^4.2.1",
     "eslint": "^8",
-    "eslint-config-next": "14.0.4",
-    "typescript": "^5"
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.5",
+    "typescript": "^5",
+    "vite": "^5.0.8"
   }
 }

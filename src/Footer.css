@@ -1,0 +1,31 @@
+.footer {
+  margin-top: auto;
+  padding: 2rem 0;
+  border-top: 1px solid var(--border-color);
+  background-color: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+  .footer {
+    background-color: #ffffff;
+  }
+}
+
+.footer-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  text-align: center;
+}
+
+@media (min-width: 640px) {
+  .footer-container {
+    padding: 0 3rem;
+  }
+}
+
+.footer-text {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
