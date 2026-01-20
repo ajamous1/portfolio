@@ -2,16 +2,23 @@ import { Ball } from './Ball'
 import { Hoop } from './Hoop'
 import { Input } from './Input'
 
+interface Feedback {
+  type: 'make' | 'miss'
+  x: number
+  y: number
+  time: number
+}
+
 export class Game {
   canvas: HTMLCanvasElement
   ctx: CanvasRenderingContext2D
   ball: Ball
   hoop: Hoop
   input: Input
-  score: number
   gravity: number
   lastTime: number
   isRunning: boolean
+  feedbacks: Feedback[]
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas
@@ -24,20 +31,20 @@ export class Game {
     // Set canvas size
     this.resize()
 
-    // Initialize game objects
-    const ballStartX = canvas.width / 2
-    const ballStartY = canvas.height - 80
-    this.ball = new Ball(ballStartX, ballStartY, 15)
+    // Initialize game objects - horizontal layout
+    const ballStartX = 80
+    const ballStartY = canvas.height / 2
+    this.ball = new Ball(ballStartX, ballStartY, 18)
 
-    const hoopX = canvas.width / 2
-    const hoopY = 120
+    const hoopX = canvas.width - 100
+    const hoopY = canvas.height / 2
     this.hoop = new Hoop(hoopX, hoopY)
 
     this.input = new Input()
-    this.score = 0
-    this.gravity = 800 // pixels per second squared
+    this.gravity = 900 // pixels per second squared
     this.lastTime = performance.now()
     this.isRunning = false
+    this.feedbacks = []
 
     // Setup input handlers
     this.setupInput()
@@ -53,11 +60,11 @@ export class Game {
   setupResize() {
     window.addEventListener('resize', () => {
       this.resize()
-      // Update ball and hoop positions
-      this.ball.startX = this.canvas.width / 2
-      this.ball.startY = this.canvas.height - 80
-      this.hoop.x = this.canvas.width / 2
-      this.hoop.y = 120
+      // Update ball and hoop positions - horizontal layout
+      this.ball.startX = 80
+      this.ball.startY = this.canvas.height / 2
+      this.hoop.x = this.canvas.width - 100
+      this.hoop.y = this.canvas.height / 2
       if (!this.ball.isShooting) {
         this.ball.reset()
       }
@@ -104,11 +111,11 @@ export class Game {
           return
         }
 
-        // Calculate velocity (opposite of drag direction)
-        const maxVelocity = 600
-        const velocityScale = Math.min(power * 3, maxVelocity) / power
-        const velocityX = deltaX * velocityScale
-        const velocityY = deltaY * velocityScale
+        // Calculate velocity (opposite of drag direction) - horizontal shooting
+        const maxVelocity = 1200
+        const velocityScale = Math.min(power * 6, maxVelocity) / power
+        const velocityX = deltaX * velocityScale // Shoot horizontally
+        const velocityY = deltaY * velocityScale * 1.2 // Increased vertical movement for arc
 
         this.ball.shoot(velocityX, velocityY)
       }
@@ -121,6 +128,12 @@ export class Game {
   }
 
   update(deltaTime: number) {
+    // Update feedback animations
+    this.feedbacks = this.feedbacks.filter(feedback => {
+      feedback.time -= deltaTime
+      return feedback.time > 0
+    })
+
     // Update ball physics
     this.ball.update(this.gravity, deltaTime)
 
@@ -136,20 +149,36 @@ export class Game {
         this.hoop.bounceBall(this.ball, collision)
       }
 
-      // Check score
+      // Check if ball goes through hoop
       if (this.hoop.checkScore(this.ball.x, this.ball.y, this.ball.radius, this.ball.vy)) {
-        this.score++
+        // Ball went through - show success feedback
+        this.feedbacks.push({
+          type: 'make',
+          x: this.hoop.x,
+          y: this.hoop.y,
+          time: 1.5 // Show for 1.5 seconds
+        })
+        
         setTimeout(() => {
           this.ball.reset()
         }, 500)
       }
 
-      // Reset if ball goes off screen
+      // Reset if ball goes off screen (horizontal layout)
       if (
-        this.ball.y > this.canvas.height + 100 ||
+        this.ball.x > this.canvas.width + 100 ||
         this.ball.x < -100 ||
-        this.ball.x > this.canvas.width + 100
+        this.ball.y > this.canvas.height + 100 ||
+        this.ball.y < -100
       ) {
+        // Ball missed - show miss feedback
+        this.feedbacks.push({
+          type: 'miss',
+          x: this.canvas.width / 2,
+          y: this.canvas.height / 2,
+          time: 1.5
+        })
+        
         setTimeout(() => {
           this.ball.reset()
         }, 500)
@@ -158,19 +187,9 @@ export class Game {
   }
 
   render() {
-    // Clear canvas
-    this.ctx.fillStyle = '#1a5f1a'
+    // Simple background
+    this.ctx.fillStyle = '#f0f0f0'
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height)
-
-    // Draw court lines
-    this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)'
-    this.ctx.lineWidth = 2
-    this.ctx.setLineDash([10, 10])
-    this.ctx.beginPath()
-    this.ctx.moveTo(0, this.canvas.height - 60)
-    this.ctx.lineTo(this.canvas.width, this.canvas.height - 60)
-    this.ctx.stroke()
-    this.ctx.setLineDash([])
 
     // Draw hoop
     this.hoop.draw(this.ctx)
@@ -187,7 +206,7 @@ export class Game {
     // Draw drag line
     if (this.input.isDragging && !this.ball.isShooting) {
       const offset = this.input.getDragOffset()
-      this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)'
+      this.ctx.strokeStyle = 'rgba(0, 0, 0, 0.3)'
       this.ctx.lineWidth = 2
       this.ctx.setLineDash([5, 5])
       this.ctx.beginPath()
@@ -197,11 +216,41 @@ export class Game {
       this.ctx.setLineDash([])
     }
 
-    // Draw score
-    this.ctx.fillStyle = '#ffffff'
-    this.ctx.font = 'bold 24px sans-serif'
-    this.ctx.textAlign = 'center'
-    this.ctx.fillText(`Score: ${this.score}`, this.canvas.width / 2, 40)
+    // Draw feedback messages
+    this.feedbacks.forEach(feedback => {
+      const alpha = Math.min(feedback.time / 0.5, 1) // Fade out in last 0.5 seconds
+      const scale = 1 + (1 - feedback.time / 1.5) * 0.3 // Scale up slightly
+      
+      this.ctx.save()
+      this.ctx.globalAlpha = alpha
+      this.ctx.translate(feedback.x, feedback.y)
+      this.ctx.scale(scale, scale)
+      
+      if (feedback.type === 'make') {
+        // Success feedback
+        this.ctx.fillStyle = '#22c55e'
+        this.ctx.font = 'bold 32px sans-serif'
+        this.ctx.textAlign = 'center'
+        this.ctx.textBaseline = 'middle'
+        this.ctx.fillText('✓', 0, 0)
+        
+        // Draw circle around it
+        this.ctx.strokeStyle = '#22c55e'
+        this.ctx.lineWidth = 3
+        this.ctx.beginPath()
+        this.ctx.arc(0, 0, 25, 0, Math.PI * 2)
+        this.ctx.stroke()
+      } else {
+        // Miss feedback
+        this.ctx.fillStyle = '#ef4444'
+        this.ctx.font = 'bold 28px sans-serif'
+        this.ctx.textAlign = 'center'
+        this.ctx.textBaseline = 'middle'
+        this.ctx.fillText('Miss', 0, 0)
+      }
+      
+      this.ctx.restore()
+    })
   }
 
   gameLoop(currentTime: number) {
@@ -227,7 +276,6 @@ export class Game {
   }
 
   reset() {
-    this.score = 0
     this.ball.reset()
     this.input.reset()
   }

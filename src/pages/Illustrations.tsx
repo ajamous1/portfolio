@@ -1,14 +1,20 @@
-import ProjectPage from '../components/ProjectPage/ProjectPage'
+import { Link } from 'react-router-dom'
+import '../App.css'
 
 function Illustrations() {
   return (
-    <ProjectPage
-      title="Illustrations"
-      subtitle="Custom illustrations and artwork"
-      paragraphs={[
-        'A portfolio of custom illustrations and digital artwork. These pieces showcase creative expression through various illustration styles and techniques.',
-      ]}
-    />
+    <div className="portfolio">
+      <header className="portfolio-header portfolio-header-left">
+        <Link to="/" className="back-link">← Back</Link>
+        <h1 className="portfolio-name">Illustrations</h1>
+      </header>
+
+      <main className="portfolio-content">
+        <section className="portfolio-section">
+          {/* Images will be added here - they speak for themselves */}
+        </section>
+      </main>
+    </div>
   )
 }
 

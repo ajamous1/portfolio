@@ -1,14 +1,20 @@
-import ProjectPage from '../components/ProjectPage/ProjectPage'
+import { Link } from 'react-router-dom'
+import '../App.css'
 
 function MotionGraphics() {
   return (
-    <ProjectPage
-      title="Motion Graphics"
-      subtitle="Animated graphics and motion design"
-      paragraphs={[
-        'Motion graphics projects featuring animated visuals and dynamic design. These works combine graphic design principles with animation to create engaging visual experiences.',
-      ]}
-    />
+    <div className="portfolio">
+      <header className="portfolio-header portfolio-header-left">
+        <Link to="/" className="back-link">← Back</Link>
+        <h1 className="portfolio-name">Motion Graphics</h1>
+      </header>
+
+      <main className="portfolio-content">
+        <section className="portfolio-section">
+          {/* Images will be added here - they speak for themselves */}
+        </section>
+      </main>
+    </div>
   )
 }
 

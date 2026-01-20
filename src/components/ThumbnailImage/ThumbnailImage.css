@@ -1,0 +1,34 @@
+.project-thumbnail {
+  width: 100%;
+  height: 200px;
+  margin-bottom: 1.5rem;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.project-thumbnail img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.motion-graphics-thumbnail img {
+  object-position: 0 -185px;
+}
+
+.misc-thumbnail img {
+  object-position: 0 -90px;
+}
+
+@media (min-width: 640px) {
+  .project-thumbnail {
+    height: 240px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .project-thumbnail {
+    height: 280px;
+  }
+}

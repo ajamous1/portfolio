@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useMode } from '../contexts/ModeContext'
+import ThumbnailImage from '../components/ThumbnailImage/ThumbnailImage'
 import '../App.css'
 
 interface Project {
@@ -7,7 +8,7 @@ interface Project {
   description: string
   route?: string
   url?: string
-  thumbnail?: string
+  thumbnail?: string // Base path without extension, e.g., '/images/graphics-thumbnail'
 }
 
 function Home() {
@@ -20,13 +21,13 @@ function Home() {
       title: 'MyType',
       description: 'Redefining the creative process through typography.',
       route: '/mytype',
-      thumbnail: '/images/mytype-thumbnail.png',
+      thumbnail: '/images/mytype-thumbnail',
     },
     {
       title: 'NBA Gameday Generator',
       description: 'Generating high-quality posters using web scraping and Photoshop APIs.',
       route: '/nba-gameday-generator',
-      thumbnail: '/images/nba-gameday-generator-thumbnail.png',
+      thumbnail: '/images/nba-gameday-generator-thumbnail',
     },
     {
       title: 'Tiny Canvas',
@@ -44,31 +45,37 @@ function Home() {
       title: 'Graphics',
       description: 'Visual design and graphic work.',
       route: '/graphics',
+      thumbnail: '/images/graphics-thumbnail',
     },
     {
       title: 'Illustrations',
       description: 'Custom illustrations and artwork.',
       route: '/illustrations',
+      thumbnail: '/images/illustrations-thumbnail',
     },
     {
       title: 'Motion Graphics',
       description: 'Animated graphics and motion design.',
       route: '/motion-graphics',
+      thumbnail: '/images/motion-graphics-thumbnail',
     },
     {
       title: 'Videos',
       description: 'Video production and editing.',
       route: '/videos',
+      thumbnail: '/images/videos-thumbnail',
     },
     {
       title: 'Logos & Brands',
       description: 'Logo design and brand identity work.',
       route: '/logos-brands',
+      thumbnail: '/images/logos-and-brands-thumbnail',
     },
     {
       title: 'Misc',
       description: 'Various design projects and experiments.',
       route: '/misc',
+      thumbnail: '/images/misc-thumbnail',
     },
   ]
 
@@ -86,13 +93,21 @@ function Home() {
       <main className="portfolio-content">
         <section className="portfolio-section">
           <div className="projects-grid">
-            {projects.map((project, index) => {
+            {projects.map((project) => {
               const ProjectContent = (
                 <>
                   {project.thumbnail && (
-                    <div className="project-thumbnail">
-                      <img src={project.thumbnail} alt={project.title} />
-                    </div>
+                    <ThumbnailImage 
+                      basePath={project.thumbnail} 
+                      alt={project.title}
+                      className={
+                        project.title === 'Motion Graphics' 
+                          ? 'motion-graphics-thumbnail' 
+                          : project.title === 'Misc' 
+                          ? 'misc-thumbnail' 
+                          : ''
+                      }
+                    />
                   )}
                   <h3 className="project-title">{project.title}</h3>
                   {project.description && (
@@ -101,10 +116,13 @@ function Home() {
                 </>
               )
 
+              // Use a stable key based on project title and mode
+              const projectKey = `${isDeveloper ? 'dev' : 'design'}-${project.title}`
+
               if (project.route) {
                 return (
                   <Link
-                    key={index}
+                    key={projectKey}
                     to={project.route}
                     className="project-card project-card-link"
                   >
@@ -116,7 +134,7 @@ function Home() {
               if (project.url) {
                 return (
                   <a
-                    key={index}
+                    key={projectKey}
                     href={project.url}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -128,7 +146,7 @@ function Home() {
               }
 
               return (
-                <div key={index} className="project-card">
+                <div key={projectKey} className="project-card">
                   {ProjectContent}
                 </div>
               )

@@ -30,9 +30,12 @@ function BasketballGame() {
         ref={canvasRef}
         className="basketball-canvas"
       />
+      <div className="basketball-game-instructions">
+        <p>Drag the ball back to aim, release to shoot</p>
+      </div>
       <div className="basketball-game-controls">
         <button className="reset-button" onClick={handleReset}>
-          Reset
+          Reset Ball
         </button>
       </div>
     </div>

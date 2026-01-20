@@ -1,14 +1,20 @@
-import ProjectPage from '../components/ProjectPage/ProjectPage'
+import { Link } from 'react-router-dom'
+import '../App.css'
 
 function LogosBrands() {
   return (
-    <ProjectPage
-      title="Logos & Brands"
-      subtitle="Logo design and brand identity work"
-      paragraphs={[
-        'Brand identity and logo design projects. These works demonstrate the creation of memorable visual identities that communicate brand values and resonate with target audiences.',
-      ]}
-    />
+    <div className="portfolio">
+      <header className="portfolio-header portfolio-header-left">
+        <Link to="/" className="back-link">← Back</Link>
+        <h1 className="portfolio-name">Logos & Brands</h1>
+      </header>
+
+      <main className="portfolio-content">
+        <section className="portfolio-section">
+          {/* Images will be added here - they speak for themselves */}
+        </section>
+      </main>
+    </div>
   )
 }
 

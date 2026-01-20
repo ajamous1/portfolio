@@ -1,14 +1,20 @@
-import ProjectPage from '../components/ProjectPage/ProjectPage'
+import { Link } from 'react-router-dom'
+import '../App.css'
 
 function Misc() {
   return (
-    <ProjectPage
-      title="Misc"
-      subtitle="Various design projects and experiments"
-      paragraphs={[
-        'A collection of miscellaneous design projects and creative experiments. These works explore different mediums, techniques, and creative directions.',
-      ]}
-    />
+    <div className="portfolio">
+      <header className="portfolio-header portfolio-header-left">
+        <Link to="/" className="back-link">← Back</Link>
+        <h1 className="portfolio-name">Misc</h1>
+      </header>
+
+      <main className="portfolio-content">
+        <section className="portfolio-section">
+          {/* Images will be added here - they speak for themselves */}
+        </section>
+      </main>
+    </div>
   )
 }
 

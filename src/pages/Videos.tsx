@@ -1,14 +1,20 @@
-import ProjectPage from '../components/ProjectPage/ProjectPage'
+import { Link } from 'react-router-dom'
+import '../App.css'
 
 function Videos() {
   return (
-    <ProjectPage
-      title="Videos"
-      subtitle="Video production and editing"
-      paragraphs={[
-        'Video production and editing projects showcasing storytelling through motion. These works demonstrate expertise in video editing, color grading, and post-production techniques.',
-      ]}
-    />
+    <div className="portfolio">
+      <header className="portfolio-header portfolio-header-left">
+        <Link to="/" className="back-link">← Back</Link>
+        <h1 className="portfolio-name">Videos</h1>
+      </header>
+
+      <main className="portfolio-content">
+        <section className="portfolio-section">
+          {/* Images will be added here - they speak for themselves */}
+        </section>
+      </main>
+    </div>
   )
 }
 

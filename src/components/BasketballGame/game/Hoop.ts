@@ -76,29 +76,29 @@ export class Hoop {
   draw(ctx: CanvasRenderingContext2D) {
     ctx.save()
 
-    // Backboard
+    // Backboard (vertical for horizontal shooting)
     ctx.fillStyle = '#ffffff'
     ctx.strokeStyle = '#333333'
     ctx.lineWidth = 3
     ctx.fillRect(
-      this.x - this.backboardWidth / 2,
-      this.y - this.backboardHeight / 2,
-      this.backboardWidth,
-      this.backboardHeight
+      this.x - this.backboardHeight / 2,
+      this.y - this.backboardWidth / 2,
+      this.backboardHeight,
+      this.backboardWidth
     )
     ctx.strokeRect(
-      this.x - this.backboardWidth / 2,
-      this.y - this.backboardHeight / 2,
-      this.backboardWidth,
-      this.backboardHeight
+      this.x - this.backboardHeight / 2,
+      this.y - this.backboardWidth / 2,
+      this.backboardHeight,
+      this.backboardWidth
     )
 
-    // Backboard center line
+    // Backboard center line (vertical)
     ctx.strokeStyle = '#333333'
     ctx.lineWidth = 2
     ctx.beginPath()
-    ctx.moveTo(this.x - 30, this.y)
-    ctx.lineTo(this.x + 30, this.y)
+    ctx.moveTo(this.x, this.y - 30)
+    ctx.lineTo(this.x, this.y + 30)
     ctx.stroke()
 
     // Rim
@@ -108,8 +108,8 @@ export class Hoop {
     ctx.arc(this.x, this.y, this.rimRadius, 0, Math.PI * 2)
     ctx.stroke()
 
-    // Net
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)'
+    // Net (hanging down)
+    ctx.strokeStyle = 'rgba(0, 0, 0, 0.3)'
     ctx.lineWidth = 2
     const netSegments = 8
     for (let i = 0; i < netSegments; i++) {

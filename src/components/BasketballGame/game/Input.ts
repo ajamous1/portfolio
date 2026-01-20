@@ -51,7 +51,7 @@ export class Input {
 
     const deltaX = this.startX - this.currentX
     const deltaY = this.startY - this.currentY
-    const maxPull = 80
+    const maxPull = 120 // Increased max pull distance
     const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY)
     const clampedDistance = Math.min(distance, maxPull)
 
