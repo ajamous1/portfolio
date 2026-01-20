@@ -1,5 +1,5 @@
 import ProjectPage from '../components/ProjectPage/ProjectPage'
-import BasketballGame from '../components/BasketballGame/BasketballGame'
+// import BasketballGame from '../components/BasketballGame/BasketballGame' // Temporarily hidden
 
 function NBAGamedayGenerator() {
   return (
@@ -22,7 +22,7 @@ function NBAGamedayGenerator() {
           variant: 'secondary',
         },
       ]}
-      sidebarContent={<BasketballGame />}
+      // sidebarContent={<BasketballGame />} // Temporarily hidden
     />
   )
 }

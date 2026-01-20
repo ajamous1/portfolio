@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import AssetGallery from '../components/AssetGallery/AssetGallery'
 import '../App.css'
 
 function MotionGraphics() {
@@ -11,7 +12,7 @@ function MotionGraphics() {
 
       <main className="portfolio-content">
         <section className="portfolio-section">
-          {/* Images will be added here - they speak for themselves */}
+          <AssetGallery category="motion-graphics" preserveAspectRatio={true} />
         </section>
       </main>
     </div>

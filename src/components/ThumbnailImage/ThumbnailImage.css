@@ -21,6 +21,10 @@
   object-position: 0 -90px;
 }
 
+.nba-gameday-thumbnail img {
+  object-position: 0 -20px;
+}
+
 @media (min-width: 640px) {
   .project-thumbnail {
     height: 240px;

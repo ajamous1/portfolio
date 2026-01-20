@@ -104,7 +104,9 @@ function Home() {
                         project.title === 'Motion Graphics' 
                           ? 'motion-graphics-thumbnail' 
                           : project.title === 'Misc' 
-                          ? 'misc-thumbnail' 
+                          ? 'misc-thumbnail'
+                          : project.title === 'NBA Gameday Generator'
+                          ? 'nba-gameday-thumbnail'
                           : ''
                       }
                     />
