@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import ProjectPage from '../components/ProjectPage/ProjectPage'
 import DrawingCanvas from '../components/DrawingCanvas/DrawingCanvas'
 import Gallery from '../components/Gallery/Gallery'
 import { saveDrawing } from '../utils/galleryStorage'

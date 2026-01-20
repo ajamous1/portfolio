@@ -205,7 +205,6 @@ export class Game {
 
     // Draw drag line
     if (this.input.isDragging && !this.ball.isShooting) {
-      const offset = this.input.getDragOffset()
       this.ctx.strokeStyle = 'rgba(0, 0, 0, 0.3)'
       this.ctx.lineWidth = 2
       this.ctx.setLineDash([5, 5])
