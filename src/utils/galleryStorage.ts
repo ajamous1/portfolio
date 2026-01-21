@@ -8,11 +8,6 @@ export interface GalleryItem {
   monthKey: string // Format: "YYYY-MM"
 }
 
-function getCurrentMonthKey(): string {
-  const now = new Date()
-  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
-}
-
 function getNextMonthStart(): number {
   const now = new Date()
   const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1)
@@ -54,5 +49,6 @@ export function getDaysUntilReset(): number {
 }
 
 export function clearGallery(): void {
-  localStorage.removeItem(STORAGE_KEY)
+  // No-op: Gallery is now stored in Supabase, not localStorage
+  // This function is kept for API compatibility but does nothing
 }
