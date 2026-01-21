@@ -1,3 +1,5 @@
+import { getGalleryDrawings, saveGalleryDrawing, type GalleryDrawing } from '../lib/supabase'
+
 export interface GalleryItem {
   id: string
   imageData: string
@@ -5,9 +7,6 @@ export interface GalleryItem {
   timestamp: number
   monthKey: string // Format: "YYYY-MM"
 }
-
-const STORAGE_KEY = 'tiny-canvas-gallery'
-const MAX_ITEMS = 20
 
 function getCurrentMonthKey(): string {
   const now = new Date()
@@ -20,57 +19,27 @@ function getNextMonthStart(): number {
   return nextMonth.getTime()
 }
 
-export function saveDrawing(imageData: string, authorName: string): boolean {
-  try {
-    const currentMonthKey = getCurrentMonthKey()
-    const items = getGalleryItems()
-    
-    // Filter to current month only
-    const currentMonthItems = items.filter(item => item.monthKey === currentMonthKey)
-    
-    // Check if gallery is full
-    if (currentMonthItems.length >= MAX_ITEMS) {
-      return false // Gallery full
-    }
-    
-    const newItem: GalleryItem = {
-      id: Date.now().toString(),
-      imageData,
-      authorName: authorName || 'Anonymous',
-      timestamp: Date.now(),
-      monthKey: currentMonthKey,
-    }
-    
-    // Add new item and keep only current month items
-    const updatedItems = [...currentMonthItems, newItem]
-    
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedItems))
-    return true
-  } catch (error) {
-    console.error('Error saving drawing:', error)
-    return false
+// Convert GalleryDrawing from Supabase to GalleryItem format
+function convertToGalleryItem(drawing: GalleryDrawing): GalleryItem {
+  return {
+    id: drawing.id,
+    imageData: drawing.image_url, // Use URL instead of base64
+    authorName: drawing.author_name,
+    timestamp: new Date(drawing.created_at).getTime(),
+    monthKey: drawing.month_key,
   }
 }
 
-export function getGalleryItems(): GalleryItem[] {
+export async function saveDrawing(imageData: string, authorName: string): Promise<boolean> {
+  // Use Supabase for persistent storage
+  return await saveGalleryDrawing(imageData, authorName)
+}
+
+export async function getGalleryItems(): Promise<GalleryItem[]> {
   try {
-    const currentMonthKey = getCurrentMonthKey()
-    const stored = localStorage.getItem(STORAGE_KEY)
-    
-    if (!stored) return []
-    
-    const items: GalleryItem[] = JSON.parse(stored)
-    
-    // Filter to current month only (auto-expire old months)
-    const currentMonthItems = items.filter(item => item.monthKey === currentMonthKey)
-    
-    // If we have items from a different month, clear them
-    if (currentMonthItems.length !== items.length) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(currentMonthItems))
-    }
-    
-    // Sort by timestamp (newest first)
-    return currentMonthItems.sort((a, b) => b.timestamp - a.timestamp)
+    // Fetch from Supabase
+    const drawings = await getGalleryDrawings()
+    return drawings.map(convertToGalleryItem)
   } catch (error) {
     console.error('Error loading gallery:', error)
     return []

@@ -139,13 +139,15 @@
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  padding: 2rem;
+  padding: 1rem;
 }
 
 .asset-modal {
   position: relative;
-  max-width: 90vw;
-  max-height: 90vh;
+  max-width: 95vw;
+  max-height: 95vh;
+  width: 90vw;
+  height: auto;
   background-color: var(--card-background);
   border-radius: 8px;
   overflow: hidden;
@@ -185,10 +187,28 @@
 
 .asset-modal iframe {
   width: 100%;
+  min-height: 70vh;
   aspect-ratio: 16 / 9;
   border: none;
   display: block;
   background-color: #000;
+}
+
+/* Larger modal for videos */
+.asset-modal-video {
+  width: 95vw;
+  max-width: 1400px;
+}
+
+@media (min-width: 768px) {
+  .asset-modal iframe {
+    min-height: 80vh;
+  }
+  
+  .asset-modal-video {
+    width: 90vw;
+    max-width: 1600px;
+  }
 }
 
 .asset-modal-title {

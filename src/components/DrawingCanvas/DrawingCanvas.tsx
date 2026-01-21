@@ -5,6 +5,8 @@ interface DrawingCanvasProps {
   onSave?: (imageData: string, authorName: string) => void
 }
 
+type Tool = 'brush' | 'eraser' | 'bucket'
+
 function DrawingCanvas({ onSave }: DrawingCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [isDrawing, setIsDrawing] = useState(false)
@@ -12,6 +14,7 @@ function DrawingCanvas({ onSave }: DrawingCanvasProps) {
   const [brushSize, setBrushSize] = useState(4)
   const [authorName, setAuthorName] = useState('')
   const [showSaveDialog, setShowSaveDialog] = useState(false)
+  const [tool, setTool] = useState<Tool>('brush')
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -29,24 +32,37 @@ function DrawingCanvas({ onSave }: DrawingCanvasProps) {
     ctx.fillRect(0, 0, canvas.width, canvas.height)
   }, [])
 
+  const getCanvasCoordinates = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+    const canvas = canvasRef.current
+    if (!canvas) return { x: 0, y: 0 }
+    const rect = canvas.getBoundingClientRect()
+    const x = 'touches' in e ? e.touches[0].clientX - rect.left : e.clientX - rect.left
+    const y = 'touches' in e ? e.touches[0].clientY - rect.top : e.clientY - rect.top
+    return { x, y }
+  }
+
+
   const startDrawing = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
-    setIsDrawing(true)
     const canvas = canvasRef.current
     if (!canvas) return
 
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
-    const rect = canvas.getBoundingClientRect()
-    const x = 'touches' in e ? e.touches[0].clientX - rect.left : e.clientX - rect.left
-    const y = 'touches' in e ? e.touches[0].clientY - rect.top : e.clientY - rect.top
+    const { x, y } = getCanvasCoordinates(e)
 
+    if (tool === 'bucket') {
+      floodFill(ctx, x, y, color)
+      return
+    }
+
+    setIsDrawing(true)
     ctx.beginPath()
     ctx.moveTo(x, y)
   }
 
   const draw = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
-    if (!isDrawing) return
+    if (!isDrawing || tool === 'bucket') return
 
     const canvas = canvasRef.current
     if (!canvas) return
@@ -54,13 +70,20 @@ function DrawingCanvas({ onSave }: DrawingCanvasProps) {
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
-    const rect = canvas.getBoundingClientRect()
-    const x = 'touches' in e ? e.touches[0].clientX - rect.left : e.clientX - rect.left
-    const y = 'touches' in e ? e.touches[0].clientY - rect.top : e.clientY - rect.top
+    const { x, y } = getCanvasCoordinates(e)
 
-    ctx.lineWidth = brushSize
-    ctx.lineCap = 'round'
-    ctx.strokeStyle = color
+    if (tool === 'eraser') {
+      ctx.globalCompositeOperation = 'destination-out'
+      ctx.lineWidth = brushSize
+      ctx.lineCap = 'round'
+      ctx.strokeStyle = 'rgba(0,0,0,1)'
+    } else {
+      ctx.globalCompositeOperation = 'source-over'
+      ctx.lineWidth = brushSize
+      ctx.lineCap = 'round'
+      ctx.strokeStyle = color
+    }
+    
     ctx.lineTo(x, y)
     ctx.stroke()
     ctx.beginPath()
@@ -76,8 +99,74 @@ function DrawingCanvas({ onSave }: DrawingCanvasProps) {
       const ctx = canvas.getContext('2d')
       if (!ctx) return
 
+      ctx.globalCompositeOperation = 'source-over'
       ctx.beginPath()
     }
+  }
+
+  const floodFill = (ctx: CanvasRenderingContext2D, startX: number, startY: number, fillColor: string) => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
+    const data = imageData.data
+    const width = canvas.width
+    const height = canvas.height
+
+    // Convert fill color to RGB
+    const fillR = parseInt(fillColor.slice(1, 3), 16)
+    const fillG = parseInt(fillColor.slice(3, 5), 16)
+    const fillB = parseInt(fillColor.slice(5, 7), 16)
+
+    // Get the color at the starting point
+    const startIdx = (Math.floor(startY) * width + Math.floor(startX)) * 4
+    const startR = data[startIdx]
+    const startG = data[startIdx + 1]
+    const startB = data[startIdx + 2]
+
+    // If the fill color matches the start color, do nothing
+    if (startR === fillR && startG === fillG && startB === fillB) {
+      return
+    }
+
+    // Stack-based flood fill algorithm
+    const stack: Array<[number, number]> = [[Math.floor(startX), Math.floor(startY)]]
+    const visited = new Set<string>()
+
+    while (stack.length > 0) {
+      const [x, y] = stack.pop()!
+      const key = `${x},${y}`
+
+      if (visited.has(key) || x < 0 || x >= width || y < 0 || y >= height) {
+        continue
+      }
+
+      const idx = (y * width + x) * 4
+      const r = data[idx]
+      const g = data[idx + 1]
+      const b = data[idx + 2]
+
+      // Check if pixel matches the start color
+      if (r !== startR || g !== startG || b !== startB) {
+        continue
+      }
+
+      visited.add(key)
+
+      // Fill the pixel
+      data[idx] = fillR
+      data[idx + 1] = fillG
+      data[idx + 2] = fillB
+      data[idx + 3] = 255
+
+      // Add neighbors to stack
+      stack.push([x + 1, y])
+      stack.push([x - 1, y])
+      stack.push([x, y + 1])
+      stack.push([x, y - 1])
+    }
+
+    ctx.putImageData(imageData, 0, 0)
   }
 
   const clearCanvas = () => {
@@ -92,11 +181,6 @@ function DrawingCanvas({ onSave }: DrawingCanvasProps) {
   }
 
   const handleSave = () => {
-    if (!authorName.trim()) {
-      alert('Please enter your name')
-      return
-    }
-
     const canvas = canvasRef.current
     if (!canvas || !onSave) return
 
@@ -114,6 +198,18 @@ function DrawingCanvas({ onSave }: DrawingCanvasProps) {
 
   return (
     <div className="drawing-canvas-container">
+      <canvas
+        ref={canvasRef}
+        className="drawing-canvas"
+        onMouseDown={startDrawing}
+        onMouseMove={draw}
+        onMouseUp={stopDrawing}
+        onMouseLeave={stopDrawing}
+        onTouchStart={startDrawing}
+        onTouchMove={draw}
+        onTouchEnd={stopDrawing}
+      />
+
       <div className="drawing-tools">
         <div className="color-picker-section">
           <label>Colors:</label>
@@ -130,16 +226,42 @@ function DrawingCanvas({ onSave }: DrawingCanvasProps) {
           </div>
         </div>
         
+        <div className="tool-selector-section">
+          <label>Tool:</label>
+          <div className="tool-selector">
+            <button
+              className={`tool-select-button ${tool === 'brush' ? 'active' : ''}`}
+              onClick={() => setTool('brush')}
+            >
+              Brush
+            </button>
+            <button
+              className={`tool-select-button ${tool === 'eraser' ? 'active' : ''}`}
+              onClick={() => setTool('eraser')}
+            >
+              Eraser
+            </button>
+            <button
+              className={`tool-select-button ${tool === 'bucket' ? 'active' : ''}`}
+              onClick={() => setTool('bucket')}
+            >
+              Fill
+            </button>
+          </div>
+        </div>
+
         <div className="brush-size-section">
-          <label>Brush Size: {brushSize}px</label>
-          <input
-            type="range"
-            min="1"
-            max="20"
-            value={brushSize}
-            onChange={(e) => setBrushSize(Number(e.target.value))}
-            className="brush-slider"
-          />
+          <label>{tool === 'bucket' ? 'Fill Tool' : `${tool === 'eraser' ? 'Eraser' : 'Brush'} Size: ${brushSize}px`}</label>
+          {tool !== 'bucket' && (
+            <input
+              type="range"
+              min="1"
+              max="20"
+              value={brushSize}
+              onChange={(e) => setBrushSize(Number(e.target.value))}
+              className="brush-slider"
+            />
+          )}
         </div>
 
         <div className="tool-buttons">
@@ -151,18 +273,6 @@ function DrawingCanvas({ onSave }: DrawingCanvasProps) {
           </button>
         </div>
       </div>
-
-      <canvas
-        ref={canvasRef}
-        className="drawing-canvas"
-        onMouseDown={startDrawing}
-        onMouseMove={draw}
-        onMouseUp={stopDrawing}
-        onMouseLeave={stopDrawing}
-        onTouchStart={startDrawing}
-        onTouchMove={draw}
-        onTouchEnd={stopDrawing}
-      />
 
       {showSaveDialog && (
         <div className="save-dialog-overlay" onClick={() => setShowSaveDialog(false)}>

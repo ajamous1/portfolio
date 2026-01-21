@@ -21,8 +21,11 @@ function ThumbnailImage({ basePath, alt, className = '' }: ThumbnailImageProps) 
     // If PNG fails, try JPG
     if (imageSrc.endsWith('.png')) {
       setImageSrc(`${basePath}.jpg`)
+    } else if (imageSrc.endsWith('.jpg')) {
+      // If JPG fails, try SVG
+      setImageSrc(`${basePath}.svg`)
     } else {
-      // Both formats failed
+      // All formats failed
       setHasError(true)
     }
   }

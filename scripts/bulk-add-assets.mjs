@@ -44,7 +44,7 @@ if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
 
 // Configuration
 const CATEGORY = 'logos-brands'
-const BUCKET_NAME = 'portfolio-assets'
+const BUCKET_NAME = 'portfolio'
 
 // List of files to add (update this with your actual file names)
 const files = [

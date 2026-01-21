@@ -13,6 +13,7 @@ import MotionGraphics from './pages/MotionGraphics'
 import Videos from './pages/Videos'
 import LogosBrands from './pages/LogosBrands'
 import Misc from './pages/Misc'
+import BulkUploadPage from './pages/BulkUpload'
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
               <Route path="/videos" element={<Videos />} />
               <Route path="/logos-brands" element={<LogosBrands />} />
               <Route path="/misc" element={<Misc />} />
+              <Route path="/bulk-upload" element={<BulkUploadPage />} />
             </Routes>
           </main>
           <Footer />

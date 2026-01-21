@@ -16,14 +16,16 @@
 }
 
 .color-picker-section,
-.brush-size-section {
+.brush-size-section,
+.tool-selector-section {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
 
 .color-picker-section label,
-.brush-size-section label {
+.brush-size-section label,
+.tool-selector-section label {
   font-size: 0.875rem;
   color: var(--text-secondary);
   font-weight: 500;
@@ -113,6 +115,40 @@
 }
 
 .tool-button-primary:hover {
+  background-color: var(--text-secondary);
+  border-color: var(--text-secondary);
+}
+
+.tool-selector {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.tool-select-button {
+  flex: 1;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background-color: var(--card-background);
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.tool-select-button:hover {
+  background-color: var(--hover-bg);
+}
+
+.tool-select-button.active {
+  background-color: var(--text-primary);
+  color: #ffffff;
+  border-color: var(--text-primary);
+}
+
+.tool-select-button.active:hover {
   background-color: var(--text-secondary);
   border-color: var(--text-secondary);
 }

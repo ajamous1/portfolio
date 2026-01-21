@@ -8,12 +8,12 @@ import '../App.css'
 function TinyCanvas() {
   const [refreshGallery, setRefreshGallery] = useState(0)
 
-  const handleSave = (imageData: string, authorName: string) => {
-    const success = saveDrawing(imageData, authorName)
+  const handleSave = async (imageData: string, authorName: string) => {
+    const success = await saveDrawing(imageData, authorName)
     if (success) {
       setRefreshGallery(prev => prev + 1)
     } else {
-      alert('Gallery is full! The gallery resets at the end of each month.')
+      alert('Failed to save drawing. Please try again.')
     }
   }
 

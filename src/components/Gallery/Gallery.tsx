@@ -5,21 +5,43 @@ import './Gallery.css'
 function Gallery() {
   const [items, setItems] = useState<GalleryItem[]>([])
   const [selectedItem, setSelectedItem] = useState<GalleryItem | null>(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     loadGallery()
     
-    // Refresh gallery every minute to check for expiration
+    // Refresh gallery every minute to check for new drawings
     const interval = setInterval(loadGallery, 60000)
     return () => clearInterval(interval)
   }, [])
 
-  const loadGallery = () => {
-    const galleryItems = getGalleryItems()
-    setItems(galleryItems)
+  const loadGallery = async () => {
+    setLoading(true)
+    try {
+      const galleryItems = await getGalleryItems()
+      setItems(galleryItems)
+    } catch (error) {
+      console.error('Error loading gallery:', error)
+    } finally {
+      setLoading(false)
+    }
   }
 
   const daysUntilReset = getDaysUntilReset()
+
+  if (loading) {
+    return (
+      <div className="gallery-container">
+        <div className="gallery-header">
+          <h3>Gallery</h3>
+          <p className="gallery-reset-info">Resets in {daysUntilReset} day{daysUntilReset !== 1 ? 's' : ''}</p>
+        </div>
+        <div className="gallery-empty">
+          <p>Loading gallery...</p>
+        </div>
+      </div>
+    )
+  }
 
   if (items.length === 0) {
     return (

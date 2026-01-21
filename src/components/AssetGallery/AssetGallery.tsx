@@ -84,7 +84,10 @@ function AssetGallery({ category, preserveAspectRatio = false, fullWidth = false
           className="asset-modal-overlay" 
           onClick={() => setSelectedAsset(null)}
         >
-          <div className="asset-modal" onClick={(e) => e.stopPropagation()}>
+          <div 
+            className={`asset-modal ${selectedAsset.file_type === 'video' ? 'asset-modal-video' : ''}`} 
+            onClick={(e) => e.stopPropagation()}
+          >
             <button 
               className="asset-modal-close" 
               onClick={() => setSelectedAsset(null)}

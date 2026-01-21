@@ -33,10 +33,12 @@ function Home() {
       title: 'Tiny Canvas',
       description: 'MS Paint-style drawing tool on a chip using Tiny Tapeout.',
       route: '/tiny-canvas',
+      thumbnail: '/images/tiny-canvas-thumbnail',
     },
     {
       title: 'Coming Soon',
       description: 'Stay tuned for upcoming projects!',
+      thumbnail: '/images/coming-soon-thumbnail',
     },
   ]
 
