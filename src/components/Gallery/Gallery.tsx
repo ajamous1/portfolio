@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { getGalleryItems, getDaysUntilReset, GalleryItem } from '../../utils/galleryStorage'
 import { deleteGalleryDrawing } from '../../lib/supabase'
 import './Gallery.css'
@@ -7,16 +7,9 @@ function Gallery() {
   const [items, setItems] = useState<GalleryItem[]>([])
   const [selectedItem, setSelectedItem] = useState<GalleryItem | null>(null)
   const [loading, setLoading] = useState(true)
+  const [failedImageIds, setFailedImageIds] = useState<Set<string>>(new Set())
 
-  useEffect(() => {
-    loadGallery()
-    
-    // Refresh gallery every minute to check for new drawings
-    const interval = setInterval(loadGallery, 60000)
-    return () => clearInterval(interval)
-  }, [])
-
-  const loadGallery = async () => {
+  const loadGallery = useCallback(async () => {
     setLoading(true)
     try {
       const galleryItems = await getGalleryItems()
@@ -28,7 +21,15 @@ function Gallery() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [failedImageIds])
+
+  useEffect(() => {
+    loadGallery()
+    
+    // Refresh gallery every minute to check for new drawings
+    const interval = setInterval(loadGallery, 60000)
+    return () => clearInterval(interval)
+  }, [loadGallery])
 
   const handleImageError = async (itemId: string) => {
     // Mark this image as failed
