@@ -72,12 +72,6 @@ function AssetGallery({ category, preserveAspectRatio = false, fullWidth = false
                 <div className="asset-play-icon">▶</div>
               </div>
             )}
-            {asset.title && (
-              <div className="asset-item-title">{asset.title}</div>
-            )}
-            {asset.description && asset.file_type === 'video' && (
-              <div className="asset-item-description">{asset.description}</div>
-            )}
           </div>
         ))}
       </div>
@@ -117,12 +111,6 @@ function AssetGallery({ category, preserveAspectRatio = false, fullWidth = false
                 controls 
                 autoPlay
               />
-            )}
-            {selectedAsset.title && (
-              <div className="asset-modal-title">{selectedAsset.title}</div>
-            )}
-            {selectedAsset.description && (
-              <div className="asset-modal-description">{selectedAsset.description}</div>
             )}
           </div>
         </div>
