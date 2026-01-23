@@ -337,4 +337,30 @@ export async function saveGalleryDrawing(imageData: string, authorName: string):
   }
 }
 
+// Delete a gallery drawing from Supabase (when image is missing)
+export async function deleteGalleryDrawing(id: string): Promise<boolean> {
+  if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+    console.error('Supabase credentials not configured')
+    return false
+  }
+
+  try {
+    const response = await fetch(
+      `${SUPABASE_URL}/rest/v1/pics?id=eq.${id}`,
+      {
+        method: 'DELETE',
+        headers: {
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        },
+      }
+    )
+
+    return response.ok
+  } catch (error) {
+    console.error('Error deleting gallery drawing:', error)
+    return false
+  }
+}
+
 export { SUPABASE_URL, SUPABASE_ANON_KEY }

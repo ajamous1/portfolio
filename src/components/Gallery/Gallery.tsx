@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { getGalleryItems, getDaysUntilReset, GalleryItem } from '../../utils/galleryStorage'
+import { deleteGalleryDrawing } from '../../lib/supabase'
 import './Gallery.css'
 
 function Gallery() {
@@ -19,11 +20,34 @@ function Gallery() {
     setLoading(true)
     try {
       const galleryItems = await getGalleryItems()
-      setItems(galleryItems)
+      // Filter out items that have failed to load
+      const validItems = galleryItems.filter(item => !failedImageIds.has(item.id))
+      setItems(validItems)
     } catch (error) {
       console.error('Error loading gallery:', error)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleImageError = async (itemId: string) => {
+    // Mark this image as failed
+    setFailedImageIds(prev => new Set(prev).add(itemId))
+    
+    // Remove from displayed items immediately
+    setItems(prev => prev.filter(item => item.id !== itemId))
+    
+    // If modal is showing this item, close it
+    if (selectedItem?.id === itemId) {
+      setSelectedItem(null)
+    }
+    
+    // Try to delete the orphaned database record
+    try {
+      await deleteGalleryDrawing(itemId)
+      console.log('Deleted orphaned gallery record:', itemId)
+    } catch (error) {
+      console.error('Failed to delete orphaned record:', error)
     }
   }
 
@@ -71,7 +95,11 @@ function Gallery() {
             className="gallery-item"
             onClick={() => setSelectedItem(item)}
           >
-            <img src={item.imageData} alt={`Drawing by ${item.authorName}`} />
+            <img 
+              src={item.imageData} 
+              alt={`Drawing by ${item.authorName}`}
+              onError={() => handleImageError(item.id)}
+            />
             <div className="gallery-item-info">
               <span className="gallery-author">{item.authorName}</span>
             </div>
@@ -85,7 +113,14 @@ function Gallery() {
             <button className="gallery-modal-close" onClick={() => setSelectedItem(null)}>
               ×
             </button>
-            <img src={selectedItem.imageData} alt={`Drawing by ${selectedItem.authorName}`} />
+            <img 
+              src={selectedItem.imageData} 
+              alt={`Drawing by ${selectedItem.authorName}`}
+              onError={() => {
+                handleImageError(selectedItem.id)
+                setSelectedItem(null)
+              }}
+            />
             <div className="gallery-modal-info">
               <p className="gallery-modal-author">By {selectedItem.authorName}</p>
               <p className="gallery-modal-date">
