@@ -63,7 +63,7 @@ function Home() {
     },
     {
       title: 'Videos',
-      description: 'Video production and editing.',
+      description: 'Edited for NBA All-Star Karl-Anthony Towns.',
       route: '/videos',
       thumbnail: '/images/videos-thumbnail',
     },

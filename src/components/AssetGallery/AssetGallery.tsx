@@ -75,6 +75,9 @@ function AssetGallery({ category, preserveAspectRatio = false, fullWidth = false
             {asset.title && (
               <div className="asset-item-title">{asset.title}</div>
             )}
+            {asset.description && asset.file_type === 'video' && (
+              <div className="asset-item-description">{asset.description}</div>
+            )}
           </div>
         ))}
       </div>
