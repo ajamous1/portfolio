@@ -36,9 +36,10 @@ function Home() {
       thumbnail: '/images/tiny-canvas-thumbnail',
     },
     {
-      title: 'Coming Soon',
-      description: 'Stay tuned for upcoming projects!',
-      thumbnail: '/images/coming-soon-thumbnail',
+      title: 'Magnus',
+      description: 'Interactive soccer ball simulator exploring the Magnus effect with real-time physics and a full ball designer.',
+      url: '/magnus',
+      thumbnail: '/images/magnus-thumbnail',
     },
   ]
 
